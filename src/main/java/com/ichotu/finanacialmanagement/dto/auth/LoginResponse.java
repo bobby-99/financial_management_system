@@ -1,7 +1,10 @@
 package com.ichotu.finanacialmanagement.dto.auth;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
+@Getter
 public class LoginResponse {
 
     private UUID id;
@@ -16,19 +19,4 @@ public class LoginResponse {
         this.token = token;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getToken(){
-        return token;
-    }
 }

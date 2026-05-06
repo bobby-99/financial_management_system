@@ -24,7 +24,6 @@ public class TransactionController {
         UUID userId = (UUID) auth.getPrincipal();
 
 
-
         transactionService.create(
                 request.getAmount(),
                 request.getDescription(),

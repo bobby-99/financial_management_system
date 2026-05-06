@@ -1,7 +1,10 @@
 package com.ichotu.finanacialmanagement.dto.auth;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
+@Getter
 public class RegisterResponse {
 
     private UUID id;
@@ -14,15 +17,4 @@ public class RegisterResponse {
         this.email = email;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }

@@ -3,6 +3,8 @@ package com.ichotu.finanacialmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -10,7 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name="transactions")
-@Data
+@Getter
+@Setter
 public class Transaction {
 
     @Id
