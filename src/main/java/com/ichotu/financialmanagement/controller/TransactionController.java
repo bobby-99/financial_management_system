@@ -3,11 +3,14 @@ package com.ichotu.financialmanagement.controller;
 import com.ichotu.financialmanagement.dto.auth.CreateTransactionRequest;
 import com.ichotu.financialmanagement.dto.auth.TransactionResponse;
 import com.ichotu.financialmanagement.service.TransactionService;
+import jakarta.validation.Valid;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RestController
@@ -15,14 +18,18 @@ import java.util.UUID;
 @Data
 public class TransactionController {
 
-
     private final TransactionService transactionService;
 
     @PostMapping
-    public String create(@RequestBody CreateTransactionRequest request){
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        UUID userId = (UUID) auth.getPrincipal();
+    public String create(
+            @Valid @RequestBody CreateTransactionRequest request
+    ) {
 
+        var auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        UUID userId = (UUID) auth.getPrincipal();
 
         transactionService.create(
                 request.getAmount(),
@@ -30,29 +37,44 @@ public class TransactionController {
                 request.getCategoryId(),
                 request.getType(),
                 userId
-
         );
 
         return "Transaction Created";
     }
 
     @GetMapping
-    public List<TransactionResponse> getUserTransactions(){
+    public Page<TransactionResponse> getUserTransactions(
+            Pageable pageable
+    ) {
 
-        var auth = SecurityContextHolder.getContext().getAuthentication();
+        var auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
         UUID userId = (UUID) auth.getPrincipal();
 
-        return transactionService.getUserTransactions(userId)
-                .stream()
-                .map(t -> new TransactionResponse(
-                        t.getId(),
-                        t.getAmount(),
-                        t.getDescription(),
-                        t.getCreatedAt(),
-                        t.getType()
-                ))
-                .toList();
+        return transactionService
+                .getUserTransactions(userId, pageable);
+    }
+
+    @GetMapping("/filter")
+    public Page<TransactionResponse> filterByDate(
+            @RequestParam OffsetDateTime startDate,
+            @RequestParam OffsetDateTime endDate,
+            Pageable pageable
+    ) {
+
+        UUID userId = (UUID) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return transactionService.getTransactionsByDateRange(
+                userId,
+                startDate,
+                endDate,
+                pageable
+        );
     }
 
 }
-

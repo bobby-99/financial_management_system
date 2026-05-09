@@ -2,17 +2,20 @@ package com.ichotu.financialmanagement.repository;
 
 import com.ichotu.financialmanagement.entity.Transaction;
 import com.ichotu.financialmanagement.entity.TransactionType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import com.ichotu.financialmanagement.dto.auth.CategorySummaryResponse;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public interface TransactionRepository
         extends JpaRepository<Transaction, UUID> {
 
-    List<Transaction> findByUserId(UUID userId);
+    Page<Transaction> findByUserId(UUID userId, Pageable pageable);
 
     @Query("""
         SELECT COALESCE(SUM(t.amount), 0)
@@ -34,5 +37,12 @@ public interface TransactionRepository
 """)
     List<CategorySummaryResponse>
     getExpenseSummaryByCategory(UUID userId);
+
+    Page<Transaction> findByUserIdAndCreatedAtBetween(
+            UUID userId,
+            OffsetDateTime startDate,
+            OffsetDateTime endDate,
+            Pageable pageable
+    );
 
 }
